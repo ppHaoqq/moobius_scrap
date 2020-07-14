@@ -82,8 +82,6 @@ data = [[re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[i]))] for 
 df = pd.DataFrame(data=data, columns=columns)
 
 save_pass = r'C:\Users\g2945\PycharmProjects\moobius_scrap\datas\{}_三宅積算.xlsx'.format(word)
-
-
 try:
     df.to_excel(save_pass)
 except :

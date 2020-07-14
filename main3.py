@@ -12,14 +12,19 @@ def main():
     kw = input('工事名を入力してください：')
     options = Options()
     #options.add_argument('--headless')
-    browser = webdriver.Chrome('C:/Users/g2945/chromedriver/chromedriver.exe', options=options)
+    driver_pass = r'C:\Users\g2945\chromedriver\chromedriver'
+    try:
+        browser = webdriver.Chrome(driver_pass, options=options)
+    except FileNotFoundError:
+        driver_pass = r'C:\chromedriver_win32\chromedriver'
+        browser = webdriver.Chrome(driver_pass, options=options)
     browser.implicitly_wait(10)
     browser.get('https://kibi-cloud.jp/moobius/User/login.aspx')
     time.sleep(2)
     #login処理
     login(browser)
     #次ページへ
-    sekisanform = browser.find_element_by_xpath('//*[@id="system_select"]/li[6]')
+    sekisanform = browser.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[1]/ul/li[7]')
     sekisanform.click()
     time.sleep(5)
     #フレーム更新
@@ -88,7 +93,12 @@ def save_excel(html, name):
     columns = [re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[0]))]
     data = [[re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[i]))] for i in range(1, len(tr))]
     df = pd.DataFrame(data=data, columns=columns)
-    df.to_excel('C:/Users/g2945/PycharmProjects/moobius_scrap/datas/三宅部長{}.xlsx'.format(name))
+    save_pass = r'C:\Users\g2945\PycharmProjects\moobius_scrap\datas\三宅部長{}.xlsx'.format(name)
+    try:
+        df.to_excel(save_pass)
+    except:
+        save_pass = 'C:/Users/daiki/PycharmProjects/moobius_scrap/datas/三宅部長{}.xlsx'.format(name)
+        df.to_excel(save_pass)
 
 
 if __name__ == '__main__':
