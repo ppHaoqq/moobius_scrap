@@ -112,7 +112,7 @@ def save_excel(html):
     columns = [re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[0]))]
     data = [[re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[i]))] for i in range(1, len(tr))]
     df = pd.DataFrame(data=data, columns=columns)
-    df.to_excel('C:/Users/daiki/PycharmProjects/moobius_scrap/datas/sekisan.xlsx')
+    df.to_excel('C:/Users/g2945/PycharmProjects/moobius_scrap/datas/sekisan.xlsx')
 
 
 if __name__ == '__main__':

@@ -1,17 +1,18 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import time
 import re
-from selenium.webdriver.chrome.options import Options
-import sys
+
+
 
 
 def main():
     kw = input('工事名を入力してください：')
     options = Options()
     #options.add_argument('--headless')
-    browser = webdriver.Chrome('C:\chromedriver_win32\chromedriver', options=options)
+    browser = webdriver.Chrome('C:/Users/g2945/chromedriver/chromedriver.exe', options=options)
     browser.implicitly_wait(10)
     browser.get('https://kibi-cloud.jp/moobius/User/login.aspx')
     time.sleep(2)
@@ -24,13 +25,12 @@ def main():
     #フレーム更新
     change_frame(browser, 'mainFram')
     #対象検索
-
     search_def(browser, kw)
     #フレーム更新
     change_frame(browser, 'mainTFram')
     #対象保存
     html = browser.page_source
-    save_excel(html)
+    save_excel(html, kw)
     #終了処理
     browser.close()
     browser.quit()
@@ -79,7 +79,7 @@ def search_def(browser, kw):
 
 
 #参考サイトhttps://tanuhack.com/selenium/#tablepandasDataFrame
-def save_excel(html):
+def save_excel(html, name):
     soup = bs(html, 'html.parser')
     selector = '#tl_List' + ' tr'
     tr = soup.select(selector)
@@ -88,7 +88,7 @@ def save_excel(html):
     columns = [re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[0]))]
     data = [[re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[i]))] for i in range(1, len(tr))]
     df = pd.DataFrame(data=data, columns=columns)
-    df.to_excel('C:/Users/daiki/PycharmProjects/moobius_scrap/datas/sekisan.xlsx')
+    df.to_excel('C:/Users/g2945/PycharmProjects/moobius_scrap/datas/三宅部長{}.xlsx'.format(name))
 
 
 if __name__ == '__main__':

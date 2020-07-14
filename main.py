@@ -5,11 +5,19 @@ import time
 import re
 from selenium.webdriver.chrome.options import Options
 import sys
+from pathlib import Path, PurePath
 
 
 options = Options()
-#options.add_argument('--headless')
-browser = webdriver.Chrome('C:\chromedriver_win32\chromedriver', options=options)
+# options.add_argument('--headless')
+
+driver_pass = Path(r'C:\Users\g2945\chromedriver\chromedriver')
+try:
+    browser = webdriver.Chrome(driver_pass, options=options)
+except FileNotFoundError:
+    driver_pass = Path(r'C:\chromedriver_win32\chromedriver')
+    browser = webdriver.Chrome(driver_pass, options=options)
+
 browser.implicitly_wait(10)
 browser.get('https://kibi-cloud.jp/moobius/User/login.aspx')
 time.sleep(2)
@@ -27,7 +35,7 @@ time.sleep(1)
 login_button.click()
 time.sleep(5)
 
-sekisanform = browser.find_element_by_xpath('//*[@id="system_select"]/li[6]')
+sekisanform = browser.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[1]/ul/li[7]')
 sekisanform.click()
 time.sleep(5)
 
@@ -39,7 +47,7 @@ search_btn = _search.find_element_by_id('btnSearchPop')
 search_btn.click()
 time.sleep(2)
 
-word = '令和2年度　高知自動車道　高知高速道路事務所管内舗装補修工事'
+word = '中ゾーン'
 word2 = sys.argv
 search_box = browser.find_element_by_id('detSerachBox_Name')
 if len(word2) == 1:
@@ -72,7 +80,15 @@ pattern2 = r'''<(".*?"|'.*?'|[^'"])*?>'''
 columns = [re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[0]))]
 data = [[re.sub(pattern2, '', s) for s in re.findall(pattern1, str(tr[i]))] for i in range(1, len(tr))]
 df = pd.DataFrame(data=data, columns=columns)
-df.to_excel('C:/Users/daiki/PycharmProjects/moobius_scrap/datas/sekisan.xlsx')
+
+save_pass = r'C:\Users\g2945\PycharmProjects\moobius_scrap\datas\{}_三宅積算.xlsx'.format(word)
+
+
+try:
+    df.to_excel(save_pass)
+except :
+    save_pass = 'C:/Users/daiki/PycharmProjects/moobius_scrap/datas/{}_三宅積算.xlsx'.format(word)
+    df.to_excel(save_pass)
 time.sleep(2)
 
 browser.close()
